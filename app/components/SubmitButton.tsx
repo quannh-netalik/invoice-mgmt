@@ -3,8 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
+import { FC } from "react";
 
-export const SubmitButton = () => {
+const SubmitButton: FC = () => {
   const { pending } = useFormStatus();
   return (
     <>
@@ -20,3 +21,5 @@ export const SubmitButton = () => {
     </>
   );
 };
+
+export default SubmitButton;

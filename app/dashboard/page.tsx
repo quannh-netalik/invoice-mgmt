@@ -1,7 +1,7 @@
 import { signOut } from "../utils/auth";
 import { requiredUser } from "../utils/hooks";
 
-export default async function DashboardRoute() {
+const DashboardRoute = async () => {
   const session = await requiredUser();
 
   return (
@@ -16,4 +16,6 @@ export default async function DashboardRoute() {
       </form>
     </div>
   );
-}
+};
+
+export default DashboardRoute;

@@ -9,15 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { auth, signIn } from "../utils/auth";
-import { SubmitButton } from "../components/SubmitButton";
 import { redirect } from "next/navigation";
+import SubmitButton from "../components/SubmitButton";
 
-export default async function Login() {
+const Login = async () => {
   const session = await auth();
   if (session?.user) {
     redirect("/dashboard");
   }
-  
+
   return (
     <>
       <div className="flex h-screen w-full items-center justify-center px-4">
@@ -53,4 +53,6 @@ export default async function Login() {
       </div>
     </>
   );
-}
+};
+
+export default Login;
