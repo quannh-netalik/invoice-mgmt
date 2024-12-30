@@ -16,10 +16,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "../utils/auth";
+import prisma from "../utils/db";
+import { redirect } from "next/navigation";
+
+const getUser = async (userId: string) => {
+  const data = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      firstName: true,
+      lastName: true,
+      address: true,
+    },
+  });
+
+  if (!data?.firstName || !data?.lastName || !data?.address) {
+    redirect("/onboarding");
+  }
+};
 
 const DashboardLayout: FC<{ children: ReactNode }> = async ({ children }) => {
   const session = await requiredUser();
-
+  const data = await getUser(session.user?.id as string);
+  
   return (
     <>
       <div className="grid min-h-screen w-full md:grid-cols-[300px_1fr] lg:grid-cols-[320px_1fr]">
