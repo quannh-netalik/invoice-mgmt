@@ -17,6 +17,7 @@ export default async function Login() {
   if (session?.user) {
     redirect("/dashboard");
   }
+  
   return (
     <>
       <div className="flex h-screen w-full items-center justify-center px-4">
