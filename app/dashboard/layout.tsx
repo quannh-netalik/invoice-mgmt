@@ -19,7 +19,7 @@ import { signOut } from "../utils/auth";
 import prisma from "../utils/db";
 import { redirect } from "next/navigation";
 
-export const getUser = async (userId: string) => {
+const validateUserOb = async (userId: string) => {
   const data = await prisma.user.findUnique({
     where: {
       id: userId,
@@ -38,7 +38,7 @@ export const getUser = async (userId: string) => {
 
 const DashboardLayout: FC<{ children: ReactNode }> = async ({ children }) => {
   const session = await requiredUser();
-  await getUser(session.user?.id as string);
+  await validateUserOb(session.user?.id as string);
 
   return (
     <>
