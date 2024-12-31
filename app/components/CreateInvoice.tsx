@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,8 +27,21 @@ import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { invoiceSchema } from "../utils/zodSchema";
 import { formatCurrency } from "../utils/format";
+import Link from "next/link";
 
-const CreateInvoice: FC = () => {
+interface ICreateInvoiceProps {
+  firstName: string;
+  lastName: string;
+  address: string;
+  email: string;
+}
+
+const CreateInvoice: FC<ICreateInvoiceProps> = ({
+  address,
+  email,
+  firstName,
+  lastName,
+}) => {
   const [lastResult, action] = useActionState(createInvoice, undefined);
   const [form, fields] = useForm({
     lastResult,
@@ -67,6 +80,7 @@ const CreateInvoice: FC = () => {
             value={calculatedTotal}
           />
 
+          {/* Invoice Name */}
           <div className="flex flex-col gap-1 w-fit mb-6">
             <div className="flex items-center gap-4">
               <Badge variant="secondary">Draft</Badge>
@@ -80,9 +94,10 @@ const CreateInvoice: FC = () => {
             <p className="text-sm text-red-500">{fields.invoiceName.errors}</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-6">
+          {/* Number & Currency */}
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
-              <Label>Invoice No.</Label>
+              <Label className="font-bold">Invoice No.</Label>
               <div className="flex">
                 <span className="px-3 border border-r-0 rounded-l-md bg-muted flex items-center ">
                   #
@@ -92,7 +107,7 @@ const CreateInvoice: FC = () => {
                   key={fields.invoiceNumber.key}
                   defaultValue={fields.invoiceNumber.initialValue}
                   className="rounded-l-none"
-                  placeholder="5"
+                  placeholder="1"
                 />
               </div>
               <p className="text-sm text-red-500">
@@ -101,7 +116,7 @@ const CreateInvoice: FC = () => {
             </div>
 
             <div>
-              <Label>Currency</Label>
+              <Label className="font-bold">Currency</Label>
               <Select
                 defaultValue="USD"
                 name={fields.currency.name}
@@ -122,44 +137,24 @@ const CreateInvoice: FC = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <Label>From</Label>
+          {/* From - To */}
+          <div className="mb-6">
+            <div className="grid md:grid-cols-2 gap-6 mb-1">
+              <Label className="font-bold">From</Label>
+              <Label className="font-bold">To</Label>
+            </div>
+            {/* Name */}
+            <div className="grid md:grid-cols-2 gap-6 mb-1">
               <div className="space-y-2">
                 <Input
                   name={fields.fromName.name}
                   key={fields.fromName.key}
-                  defaultValue={fields.fromName.initialValue}
+                  defaultValue={firstName + " " + lastName}
                   placeholder="Your Name"
                   maxLength={40}
                 />
                 <p className="text-sm text-red-500">{fields.fromName.errors}</p>
-                <Input
-                  name={fields.fromEmail.name}
-                  key={fields.fromEmail.key}
-                  defaultValue={fields.fromEmail.initialValue}
-                  placeholder="Your Email"
-                  type="email"
-                  maxLength={40}
-                />
-                <p className="text-sm text-red-500">
-                  {fields.fromEmail.errors}
-                </p>
-                <Input
-                  name={fields.fromAddress.name}
-                  key={fields.fromAddress.key}
-                  defaultValue={fields.fromAddress.initialValue}
-                  placeholder="Your Address"
-                  maxLength={100}
-                />
-                <p className="text-sm text-red-500">
-                  {fields.fromAddress.errors}
-                </p>
               </div>
-            </div>
-
-            <div>
-              <Label>To</Label>
               <div className="space-y-2">
                 <Input
                   name={fields.clientName.name}
@@ -171,6 +166,24 @@ const CreateInvoice: FC = () => {
                 <p className="text-sm text-red-500">
                   {fields.clientName.errors}
                 </p>
+              </div>
+            </div>
+            {/* Email */}
+            <div className="grid md:grid-cols-2 gap-6 mb-1">
+              <div className="space-y-2">
+                <Input
+                  name={fields.fromEmail.name}
+                  key={fields.fromEmail.key}
+                  defaultValue={email}
+                  placeholder="Your Email"
+                  type="email"
+                  maxLength={40}
+                />
+                <p className="text-sm text-red-500">
+                  {fields.fromEmail.errors}
+                </p>
+              </div>
+              <div className="space-y-2">
                 <Input
                   name={fields.clientEmail.name}
                   key={fields.clientEmail.key}
@@ -182,6 +195,23 @@ const CreateInvoice: FC = () => {
                 <p className="text-sm text-red-500">
                   {fields.clientEmail.errors}
                 </p>
+              </div>
+            </div>
+            {/* Address */}
+            <div className="grid md:grid-cols-2 gap-6 mb-1">
+              <div className="space-y-2">
+                <Input
+                  name={fields.fromAddress.name}
+                  key={fields.fromAddress.key}
+                  defaultValue={address}
+                  placeholder="Your Address"
+                  maxLength={100}
+                />
+                <p className="text-sm text-red-500">
+                  {fields.fromAddress.errors}
+                </p>
+              </div>
+              <div className="space-y-2">
                 <Input
                   name={fields.clientAddress.name}
                   key={fields.clientAddress.key}
@@ -196,10 +226,11 @@ const CreateInvoice: FC = () => {
             </div>
           </div>
 
+          {/* Date */}
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
               <div>
-                <Label>Date</Label>
+                <Label className="font-bold">Date</Label>
               </div>
               <Popover>
                 <PopoverTrigger asChild>
@@ -232,7 +263,7 @@ const CreateInvoice: FC = () => {
             </div>
 
             <div>
-              <Label>Invoice Due</Label>
+              <Label className="font-bold">Invoice Due</Label>
               <Select
                 name={fields.dueDate.name}
                 key={fields.dueDate.key}
@@ -251,6 +282,7 @@ const CreateInvoice: FC = () => {
             </div>
           </div>
 
+          {/* Additional information */}
           <div>
             <div className="grid grid-cols-12 gap-4 mb-2 font-medium">
               <p className="col-span-6">Description</p>
@@ -295,7 +327,7 @@ const CreateInvoice: FC = () => {
                   onChange={(e) => setRate(e.target.value)}
                 />
                 <p className="text-sm text-red-500">
-                  {fields.invoiceItemQuantity.errors}
+                  {fields.invoiceItemRate.errors}
                 </p>
               </div>
               <div className="col-span-2">
@@ -308,14 +340,15 @@ const CreateInvoice: FC = () => {
             </div>
           </div>
 
+          {/* Total Calculation */}
           <div className="flex justify-end">
             <div className="w-1/3">
               <div className="flex justify-between">
-                <span>Subtotal</span>
+                <span className="font-bold">Subtotal</span>
                 <span>$5.00</span>
               </div>
               <div className="flex justify-between py-2 border-t">
-                <span>Total ({currency})</span>
+                <span className="font-bold">Total ({currency})</span>
                 <span className="font-medium underline underline-offset-2">
                   $5.00
                 </span>
@@ -323,8 +356,9 @@ const CreateInvoice: FC = () => {
             </div>
           </div>
 
+          {/* Note */}
           <div>
-            <Label>Note</Label>
+            <Label className="font-bold">Note</Label>
             <Textarea
               name={fields.note.name}
               key={fields.note.key}
@@ -335,7 +369,15 @@ const CreateInvoice: FC = () => {
           </div>
 
           <div className="flex items-center justify-end mt-6">
-            <div className="">
+            <div className="flex gap-4">
+              <Link
+                href="/dashboard/invoices"
+                className={buttonVariants({
+                  variant: "outline",
+                })}
+              >
+                Back
+              </Link>
               <SubmitButton text="Send Invoice to Client" />
             </div>
           </div>

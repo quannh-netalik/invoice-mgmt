@@ -7,9 +7,18 @@ import { FC } from "react";
 
 interface ISubmitButtonProps {
   text: string;
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link"
+    | null
+    | undefined;
 }
 
-const SubmitButton: FC<ISubmitButtonProps> = ({ text }) => {
+const SubmitButton: FC<ISubmitButtonProps> = ({ text, variant }) => {
   const { pending } = useFormStatus();
   return (
     <>
@@ -18,7 +27,7 @@ const SubmitButton: FC<ISubmitButtonProps> = ({ text }) => {
           <Loader2 className="size-4 mr-2 animate-spin" /> Please wait...
         </Button>
       ) : (
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" variant={variant}>
           {text}
         </Button>
       )}
