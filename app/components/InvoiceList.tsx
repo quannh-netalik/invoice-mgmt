@@ -8,33 +8,68 @@ import {
 } from "@/components/ui/table";
 import { FC } from "react";
 import InvoiceActions from "./InvoiceActions";
+import prisma from "../utils/db";
+import { requiredUser } from "../utils/hooks";
+import { formatCurrency, formatDate } from "../utils/format";
+import { Badge } from "@/components/ui/badge";
 
-const InvoiceList: FC = () => (
-  <Table>
-    <TableHeader>
-      <TableRow>
-        <TableHead>Invoice ID</TableHead>
-        <TableHead>Customer</TableHead>
-        <TableHead>Amount</TableHead>
-        <TableHead>Status</TableHead>
-        <TableHead>Date</TableHead>
-        <TableHead className="text-right">Actions</TableHead>
-      </TableRow>
-    </TableHeader>
+const getData = async (userId: string) => {
+  return prisma.invoice.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      id: true,
+      clientName: true,
+      total: true,
+      createdAt: true,
+      status: true,
+      invoiceNumber: true,
+      currency: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
 
-    <TableBody>
-      <TableRow>
-        <TableCell>#1</TableCell>
-        <TableCell>Quan Nguyen</TableCell>
-        <TableCell>$55.00</TableCell>
-        <TableCell>Paid</TableCell>
-        <TableCell>22/11/2024</TableCell>
-        <TableCell className="text-right">
-          <InvoiceActions />
-        </TableCell>
-      </TableRow>
-    </TableBody>
-  </Table>
-);
+const InvoiceList: FC = async () => {
+  const session = await requiredUser();
+  const data = await getData(session.user?.id as string);
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Invoice ID</TableHead>
+          <TableHead>Customer</TableHead>
+          <TableHead>Amount</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Date</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {data.map((invoice) => (
+          <TableRow key={invoice.id}>
+            <TableCell>#{invoice.invoiceNumber}</TableCell>
+            <TableCell>{invoice.clientName}</TableCell>
+            <TableCell>
+              {formatCurrency(invoice.total, invoice.currency)}
+            </TableCell>
+            <TableCell>
+              <Badge>{invoice.status}</Badge>
+            </TableCell>
+            <TableCell>{formatDate(invoice.createdAt)}</TableCell>
+            <TableCell className="text-right">
+              <InvoiceActions />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
 
 export default InvoiceList;

@@ -20,12 +20,13 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon } from "lucide-react";
-import { FC, useActionState, useCallback, useMemo, useState } from "react";
+import { FC, useActionState, useMemo, useState } from "react";
 import SubmitButton from "./SubmitButton";
 import { createInvoice } from "../actions";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { invoiceSchema } from "../utils/zodSchema";
+import { formatCurrency } from "../utils/format";
 
 const CreateInvoice: FC = () => {
   const [lastResult, action] = useActionState(createInvoice, undefined);
@@ -48,15 +49,6 @@ const CreateInvoice: FC = () => {
   const calculatedTotal = useMemo(
     () => (Number(rate) || 0) * (Number(quantity) || 0),
     [quantity, rate]
-  );
-  const formatCurrency = useCallback(
-    (amount: number) => {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-      }).format(amount);
-    },
-    [currency]
   );
 
   return (
@@ -139,6 +131,7 @@ const CreateInvoice: FC = () => {
                   key={fields.fromName.key}
                   defaultValue={fields.fromName.initialValue}
                   placeholder="Your Name"
+                  maxLength={40}
                 />
                 <p className="text-sm text-red-500">{fields.fromName.errors}</p>
                 <Input
@@ -146,6 +139,8 @@ const CreateInvoice: FC = () => {
                   key={fields.fromEmail.key}
                   defaultValue={fields.fromEmail.initialValue}
                   placeholder="Your Email"
+                  type="email"
+                  maxLength={40}
                 />
                 <p className="text-sm text-red-500">
                   {fields.fromEmail.errors}
@@ -155,6 +150,7 @@ const CreateInvoice: FC = () => {
                   key={fields.fromAddress.key}
                   defaultValue={fields.fromAddress.initialValue}
                   placeholder="Your Address"
+                  maxLength={100}
                 />
                 <p className="text-sm text-red-500">
                   {fields.fromAddress.errors}
@@ -170,6 +166,7 @@ const CreateInvoice: FC = () => {
                   key={fields.clientName.key}
                   defaultValue={fields.clientName.initialValue}
                   placeholder="Client Name"
+                  maxLength={40}
                 />
                 <p className="text-sm text-red-500">
                   {fields.clientName.errors}
@@ -179,6 +176,8 @@ const CreateInvoice: FC = () => {
                   key={fields.clientEmail.key}
                   defaultValue={fields.clientEmail.initialValue}
                   placeholder="Client Email"
+                  type="email"
+                  maxLength={40}
                 />
                 <p className="text-sm text-red-500">
                   {fields.clientEmail.errors}
@@ -188,6 +187,7 @@ const CreateInvoice: FC = () => {
                   key={fields.clientAddress.key}
                   defaultValue={fields.clientAddress.initialValue}
                   placeholder="Client Address"
+                  maxLength={100}
                 />
                 <p className="text-sm text-red-500">
                   {fields.clientAddress.errors}
@@ -276,6 +276,7 @@ const CreateInvoice: FC = () => {
                   key={fields.invoiceItemQuantity.key}
                   type="number"
                   placeholder="0"
+                  min="0"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                 />
@@ -289,6 +290,7 @@ const CreateInvoice: FC = () => {
                   key={fields.invoiceItemRate.key}
                   type="number"
                   placeholder="0"
+                  min="0"
                   value={rate}
                   onChange={(e) => setRate(e.target.value)}
                 />
@@ -298,7 +300,7 @@ const CreateInvoice: FC = () => {
               </div>
               <div className="col-span-2">
                 <Input
-                  value={formatCurrency(calculatedTotal)}
+                  value={formatCurrency(calculatedTotal, currency)}
                   disabled
                   placeholder="$0.00"
                 />
