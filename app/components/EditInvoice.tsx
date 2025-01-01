@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,7 @@ import { editInvoice } from "../actions";
 import { Prisma } from "@prisma/client";
 import { invoiceSchema } from "../utils/zodSchema";
 import { formatCurrency } from "../utils/format";
+import Link from "next/link";
 
 interface IEditInvoiceProps {
   data: Prisma.InvoiceGetPayload<object>;
@@ -74,6 +75,7 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
             value={calculateTotal}
           />
 
+          {/* Invoice Name */}
           <div className="flex flex-col gap-1 w-fit mb-6">
             <div className="flex items-center gap-4">
               <Badge variant="secondary">Draft</Badge>
@@ -87,9 +89,10 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
             <p className="text-sm text-red-500">{fields.invoiceName.errors}</p>
           </div>
 
+          {/* Number & Currency */}
           <div className="grid md:grid-cols-3 gap-6 mb-6">
             <div>
-              <Label>Invoice No.</Label>
+              <Label className="font-bold">Invoice No.</Label>
               <div className="flex">
                 <span className="px-3 border border-r-0 rounded-l-md bg-muted flex items-center">
                   #
@@ -108,7 +111,7 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
             </div>
 
             <div>
-              <Label>Currency</Label>
+              <Label className="font-bold">Currency</Label>
               <Select
                 defaultValue="USD"
                 name={fields.currency.name}
@@ -129,9 +132,14 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <Label>From</Label>
+          {/* From - To */}
+          <div className="mb-6">
+            <div className="grid md:grid-cols-2 gap-6 mb-1">
+              <Label className="font-bold">From</Label>
+              <Label className="font-bold">To</Label>
+            </div>
+            {/* Name */}
+            <div className="grid md:grid-cols-2 gap-6 mb-1">
               <div className="space-y-2">
                 <Input
                   name={fields.fromName.name}
@@ -140,29 +148,7 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
                   defaultValue={data.fromName}
                 />
                 <p className="text-red-500 text-sm">{fields.fromName.errors}</p>
-                <Input
-                  placeholder="Your Email"
-                  name={fields.fromEmail.name}
-                  key={fields.fromEmail.key}
-                  defaultValue={data.fromEmail}
-                />
-                <p className="text-red-500 text-sm">
-                  {fields.fromEmail.errors}
-                </p>
-                <Input
-                  placeholder="Your Address"
-                  name={fields.fromAddress.name}
-                  key={fields.fromAddress.key}
-                  defaultValue={data.fromAddress}
-                />
-                <p className="text-red-500 text-sm">
-                  {fields.fromAddress.errors}
-                </p>
               </div>
-            </div>
-
-            <div>
-              <Label>To</Label>
               <div className="space-y-2">
                 <Input
                   name={fields.clientName.name}
@@ -173,6 +159,22 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
                 <p className="text-red-500 text-sm">
                   {fields.clientName.errors}
                 </p>
+              </div>
+            </div>
+            {/* Email */}
+            <div className="grid md:grid-cols-2 gap-6 mb-1">
+              <div className="space-y-2">
+                <Input
+                  placeholder="Your Email"
+                  name={fields.fromEmail.name}
+                  key={fields.fromEmail.key}
+                  defaultValue={data.fromEmail}
+                />
+                <p className="text-red-500 text-sm">
+                  {fields.fromEmail.errors}
+                </p>
+              </div>
+              <div className="space-y-2">
                 <Input
                   name={fields.clientEmail.name}
                   key={fields.clientEmail.key}
@@ -182,6 +184,22 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
                 <p className="text-red-500 text-sm">
                   {fields.clientEmail.errors}
                 </p>
+              </div>
+            </div>
+            {/* Address */}
+            <div className="grid md:grid-cols-2 gap-6 mb-1">
+              <div className="space-y-2">
+                <Input
+                  placeholder="Your Address"
+                  name={fields.fromAddress.name}
+                  key={fields.fromAddress.key}
+                  defaultValue={data.fromAddress}
+                />
+                <p className="text-red-500 text-sm">
+                  {fields.fromAddress.errors}
+                </p>
+              </div>
+              <div className="space-y-2">
                 <Input
                   name={fields.clientAddress.name}
                   key={fields.clientAddress.key}
@@ -195,10 +213,11 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
             </div>
           </div>
 
+          {/* Date */}
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
               <div>
-                <Label>Date</Label>
+                <Label className="font-bold">Date</Label>
               </div>
               <Popover>
                 <PopoverTrigger asChild>
@@ -230,7 +249,7 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
             </div>
 
             <div>
-              <Label>Invoice Due</Label>
+              <Label className="font-bold">Invoice Due</Label>
               <Select
                 name={fields.dueDate.name}
                 key={fields.dueDate.key}
@@ -249,6 +268,7 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
             </div>
           </div>
 
+          {/* Additional information */}
           <div>
             <div className="grid grid-cols-12 gap-4 mb-2 font-medium">
               <p className="col-span-6">Description</p>
@@ -307,11 +327,11 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
           <div className="flex justify-end">
             <div className="w-1/3">
               <div className="flex justify-between py-2">
-                <span>Subtotal</span>
+                <span className="font-bold">Subtotal</span>
                 <span>{formatCurrency(calculateTotal, currency)}</span>
               </div>
               <div className="flex justify-between py-2 border-t">
-                <span>Total ({currency})</span>
+                <span className="font-bold">Total ({currency})</span>
                 <span className="font-medium underline underline-offset-2">
                   {formatCurrency(calculateTotal, currency)}
                 </span>
@@ -320,7 +340,7 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
           </div>
 
           <div>
-            <Label>Note</Label>
+            <Label className="font-bold">Note</Label>
             <Textarea
               name={fields.note.name}
               key={fields.note.key}
@@ -331,7 +351,15 @@ const EditInvoice: FC<IEditInvoiceProps> = ({ data }) => {
           </div>
 
           <div className="flex items-center justify-end mt-6">
-            <div>
+            <div className="flex gap-4">
+              <Link
+                href="/dashboard/invoices"
+                className={buttonVariants({
+                  variant: "outline",
+                })}
+              >
+                Back
+              </Link>
               <SubmitButton text="Update Invoice" />
             </div>
           </div>

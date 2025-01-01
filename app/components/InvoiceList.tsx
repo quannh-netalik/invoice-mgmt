@@ -68,7 +68,15 @@ const InvoiceList: FC = async () => {
                   {formatCurrency(invoice.total, invoice.currency)}
                 </TableCell>
                 <TableCell>
-                  <Badge>{invoice.status}</Badge>
+                  <Badge
+                    style={{
+                      backgroundColor:
+                        invoice.status === "PAID" ? "#6bcd5ea3" : "#f6ed3da2",
+                      color: "#000",
+                    }}
+                  >
+                    {invoice.status}
+                  </Badge>
                 </TableCell>
                 <TableCell>{formatDate(invoice.createdAt)}</TableCell>
                 <TableCell className="text-right">
