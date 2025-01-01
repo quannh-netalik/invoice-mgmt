@@ -5,19 +5,18 @@ import { HomeIcon, Users2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FC } from "react";
+import { DashboardLink } from "./DashboardLink.interface";
 
-export const dashboardLinks = [
+export const dashboardLinks: DashboardLink[] = [
   {
-    id: 0,
     name: "Dashboard",
     href: "/dashboard",
-    icon: HomeIcon,
+    Icon: HomeIcon,
   },
   {
-    id: 1,
     name: "Invoices",
     href: "/dashboard/invoices",
-    icon: Users2,
+    Icon: Users2,
   },
 ];
 
@@ -34,9 +33,9 @@ const DashboardLinks: FC = () => {
             "flex items-center gap-3 round-lg px-3 py-2 transition-all hover:text-primary"
           )}
           href={link.href}
-          key={link.id}
+          key={link.href}
         >
-          <link.icon className="size-4" />
+          <link.Icon className="size-4" />
           {link.name}
         </Link>
       ))}

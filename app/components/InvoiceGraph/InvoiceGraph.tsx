@@ -9,11 +9,12 @@ import Graph from "../Graph";
 import prisma from "../../utils/db";
 import { requiredUser } from "../../utils/hooks";
 import { FC } from "react";
+import { InvoiceStatus } from "@prisma/client";
 
 const getInvoices = async (userId: string) => {
   const rawData = await prisma.invoice.findMany({
     where: {
-      status: "PAID",
+      status: InvoiceStatus.PAID,
       userId: userId,
       createdAt: {
         lte: new Date(),
@@ -64,7 +65,7 @@ const InvoiceGraph: FC = async () => {
   const data = await getInvoices(session.user?.id as string);
 
   return (
-    <Card className="lg:col-span-2">
+    <Card className="col-span-1 sm:col-span-2 md:col-span-2 lg:col-span-2">
       <CardHeader>
         <CardTitle>Paid Invoices</CardTitle>
         <CardDescription>

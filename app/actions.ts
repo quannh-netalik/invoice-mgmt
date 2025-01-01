@@ -7,6 +7,7 @@ import prisma from "./utils/db";
 import { redirect } from "next/navigation";
 import { emailClient } from "./utils/mailstrap";
 import { formatCurrency, formatDate } from "./utils/format";
+import { InvoiceStatus } from "@prisma/client";
 
 export const onboardUser = async (
   _previousState: unknown,
@@ -183,7 +184,7 @@ export async function MarkAsPaidAction(invoiceId: string) {
       id: invoiceId,
     },
     data: {
-      status: "PAID",
+      status: InvoiceStatus.PAID,
     },
   });
 

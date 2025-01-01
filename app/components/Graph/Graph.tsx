@@ -26,7 +26,7 @@ const Graph: FC<IGraphProps> = ({ data }) => {
           color: "hsl(var(--primary))",
         },
       }}
-      className="min-h-[300px]"
+      className="min-h-[100px]"
     >
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>

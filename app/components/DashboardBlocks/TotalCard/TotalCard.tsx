@@ -41,20 +41,18 @@ const TotalCard: FC<ITotalCard> = ({ data }) => {
       </CardHeader>
       <CardContent>
         <div className="flex justify-between">
-          <h2 className="text-2xl font-bold flex gap-2">
+          <h2 className="text-2xl font-bold flex flex-col">
             {formatCurrency(total, "USD")}
-            {isActualTotal && (
-              <span className="text-[14px] font-medium">(-${unpaidTotal})</span>
-            )}
           </h2>
           <Toggle
+            className="border border-[]"
             pressed={isActualTotal}
             onPressedChange={() => setIsActualTotal((pressed) => !pressed)}
           >
             Received
           </Toggle>
         </div>
-        <p className="text-xs text-muted-foreground">Based on total volume</p>
+        <p className="text-xs text-muted-foreground">Based on total volume {isActualTotal && `(unpaid: $${unpaidTotal})`}</p>
       </CardContent>
     </Card>
   );

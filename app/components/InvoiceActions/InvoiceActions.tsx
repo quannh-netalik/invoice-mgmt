@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { InvoiceStatus } from "@prisma/client";
 import {
   CheckCircle,
   DownloadCloudIcon,
@@ -18,11 +19,13 @@ import {
 import Link from "next/link";
 import { FC } from "react";
 import { toast } from "sonner";
+import { IActionItem } from "./InvoiceActions.interface";
 
 interface IInvoiceActionsProps {
   id: string;
   status: string;
 }
+
 const InvoiceActions: FC<IInvoiceActionsProps> = ({ id, status }) => {
   const handleSendReminder = () => {
     toast.promise(
@@ -40,6 +43,39 @@ const InvoiceActions: FC<IInvoiceActionsProps> = ({ id, status }) => {
     );
   };
 
+  const actionItems: IActionItem[] = [
+    {
+      href: `/dashboard/invoices/${id}`,
+      Icon: Pencil,
+      text: "Edit Invoice",
+      disabled: status === InvoiceStatus.PAID,
+    },
+    {
+      href: `/api/invoice/${id}`,
+      Icon: DownloadCloudIcon,
+      text: "Download Invoice",
+      target: "_blank",
+    },
+    {
+      onClick: handleSendReminder,
+      Icon: Mail,
+      text: "Reminder Email",
+      disabled: status === InvoiceStatus.PAID,
+    },
+    {
+      href: `/dashboard/invoices/${id}/delete`,
+      Icon: Trash,
+      text: "Delete Invoice",
+      disabled: status === InvoiceStatus.PAID,
+    },
+    {
+      href: `/dashboard/invoices/${id}/paid`,
+      Icon: CheckCircle,
+      text: "Mark as Paid",
+      disabled: status === InvoiceStatus.PAID,
+    },
+  ];
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -47,34 +83,26 @@ const InvoiceActions: FC<IInvoiceActionsProps> = ({ id, status }) => {
           <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild disabled={status === "PAID"}>
-          <Link href={`/dashboard/invoices/${id}`}>
-            <Pencil className="size-4 mr-2" /> Edit Invoice
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href={`/api/invoice/${id}`} target="_blank">
-            <DownloadCloudIcon className="size-4 mr-2" /> Download Invoice
-          </Link>
-        </DropdownMenuItem>
-        {status !== "PAID" && (
-          <>
-            <DropdownMenuItem onClick={handleSendReminder}>
-              <Mail className="size-4 mr-2" /> Reminder Email
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href={`/dashboard/invoices/${id}/delete`}>
-                <Trash className="size-4 mr-2" /> Delete Invoice
+        {actionItems.map((item) => (
+          <DropdownMenuItem
+            disabled={item.disabled}
+            key={item.text}
+            onClick={item.onClick}
+            asChild={!item.onClick}
+          >
+            {item.href ? (
+              <Link href={item.href} target={item.target}>
+                <item.Icon className="size-4 mr-2" /> {item.text}
               </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href={`/dashboard/invoices/${id}/paid`}>
-                <CheckCircle className="size-4 mr-2" /> Mark as Paid
-              </Link>
-            </DropdownMenuItem>
-          </>
-        )}
+            ) : (
+              <>
+                <item.Icon className="size-4 mr-2" /> {item.text}
+              </>
+            )}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

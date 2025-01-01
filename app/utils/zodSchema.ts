@@ -1,3 +1,4 @@
+import { InvoiceStatus } from "@prisma/client";
 import { z } from "zod";
 
 export const onboardingSchema = z.object({
@@ -9,7 +10,9 @@ export const onboardingSchema = z.object({
 export const invoiceSchema = z.object({
   invoiceName: z.string().min(1, "Invoice Name is required"),
   total: z.number().min(1, "1$ is minimum"),
-  status: z.enum(["PAID", "PENDING"]).default("PENDING"),
+  status: z
+    .enum([InvoiceStatus.PAID, InvoiceStatus.PENDING])
+    .default(InvoiceStatus.PENDING),
   date: z.string().min(1, "Date is required"),
   dueDate: z.number().min(0, "Due Date is required"),
   fromName: z.string().min(1, "Your name is required"),
