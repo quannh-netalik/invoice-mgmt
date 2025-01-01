@@ -7,12 +7,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { FC } from "react";
-import InvoiceActions from "./InvoiceActions";
-import prisma from "../utils/db";
-import { requiredUser } from "../utils/hooks";
-import { formatCurrency, formatDate } from "../utils/format";
-import { Badge } from "@/components/ui/badge";
-import EmptyState from "./EmptyState";
+import InvoiceActions from "../InvoiceActions";
+import prisma from "../../utils/db";
+import { requiredUser } from "../../utils/hooks";
+import { formatCurrency, formatDate } from "../../utils/format";
+import EmptyState from "../EmptyState";
+import PaymentBadge from "../PaymentBadge";
 
 const getData = async (userId: string) => {
   return prisma.invoice.findMany({
@@ -68,15 +68,7 @@ const InvoiceList: FC = async () => {
                   {formatCurrency(invoice.total, invoice.currency)}
                 </TableCell>
                 <TableCell>
-                  <Badge
-                    style={{
-                      backgroundColor:
-                        invoice.status === "PAID" ? "#6bcd5ea3" : "#f6ed3da2",
-                      color: "#000",
-                    }}
-                  >
-                    {invoice.status}
-                  </Badge>
+                  <PaymentBadge status={invoice.status} />
                 </TableCell>
                 <TableCell>{formatDate(invoice.createdAt)}</TableCell>
                 <TableCell className="text-right">

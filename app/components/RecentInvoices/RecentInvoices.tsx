@@ -1,9 +1,11 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import prisma from "../utils/db";
-import { requiredUser } from "../utils/hooks";
-import { formatCurrency } from "../utils/format";
+import prisma from "../../utils/db";
+import { requiredUser } from "../../utils/hooks";
+import { formatCurrency } from "../../utils/format";
+import PaymentBadge from "../PaymentBadge";
+import { FC } from "react";
 
 const getInvoice = async (userId: string) => {
   const data = await prisma.invoice.findMany({
@@ -16,6 +18,7 @@ const getInvoice = async (userId: string) => {
       clientEmail: true,
       total: true,
       currency: true,
+      status: true,
     },
     orderBy: {
       createdAt: "desc",
@@ -26,7 +29,7 @@ const getInvoice = async (userId: string) => {
   return data;
 };
 
-const RecentInvoices = async () => {
+const RecentInvoices: FC = async () => {
   const session = await requiredUser();
   const data = await getInvoice(session.user?.id as string);
 
@@ -50,7 +53,10 @@ const RecentInvoices = async () => {
               </p>
             </div>
             <div className="ml-auto font-medium">
-              +{formatCurrency(item.total, item.currency)}
+              <PaymentBadge
+                status={item.status}
+                msg={`+${formatCurrency(item.total, item.currency)}`}
+              />
             </div>
           </div>
         ))}

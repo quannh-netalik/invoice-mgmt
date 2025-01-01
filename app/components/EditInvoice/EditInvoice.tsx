@@ -20,14 +20,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon } from "lucide-react";
-import SubmitButton from "./SubmitButton";
+import SubmitButton from "../SubmitButton";
 import { FC, useActionState, useMemo, useState } from "react";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
-import { editInvoice } from "../actions";
+import { editInvoice } from "../../actions";
 import { Prisma } from "@prisma/client";
-import { invoiceSchema } from "../utils/zodSchema";
-import { formatCurrency } from "../utils/format";
+import { invoiceSchema } from "../../utils/zodSchema";
+import { formatCurrency } from "../../utils/format";
 import Link from "next/link";
 
 interface IEditInvoiceProps {

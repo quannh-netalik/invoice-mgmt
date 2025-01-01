@@ -5,11 +5,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Graph from "./Graph";
-import prisma from "../utils/db";
-import { requiredUser } from "../utils/hooks";
+import Graph from "../Graph";
+import prisma from "../../utils/db";
+import { requiredUser } from "../../utils/hooks";
+import { FC } from "react";
 
-async function getInvoices(userId: string) {
+const getInvoices = async (userId: string) => {
   const rawData = await prisma.invoice.findMany({
     where: {
       status: "PAID",
@@ -56,9 +57,9 @@ async function getInvoices(userId: string) {
     }));
 
   return transformedData;
-}
+};
 
-const InvoiceGraph = async () => {
+const InvoiceGraph: FC = async () => {
   const session = await requiredUser();
   const data = await getInvoices(session.user?.id as string);
 

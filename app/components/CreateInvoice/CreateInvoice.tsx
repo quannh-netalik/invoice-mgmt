@@ -21,12 +21,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon } from "lucide-react";
 import { FC, useActionState, useMemo, useState } from "react";
-import SubmitButton from "./SubmitButton";
-import { createInvoice } from "../actions";
+import SubmitButton from "../SubmitButton";
+import { createInvoice } from "../../actions";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
-import { invoiceSchema } from "../utils/zodSchema";
-import { formatCurrency } from "../utils/format";
+import { invoiceSchema } from "../../utils/zodSchema";
+import { formatCurrency } from "../../utils/format";
 import Link from "next/link";
 
 interface ICreateInvoiceProps {
@@ -358,7 +358,9 @@ const CreateInvoice: FC<ICreateInvoiceProps> = ({
 
           {/* Note */}
           <div>
-            <Label className="font-bold">Note</Label>
+            <Label className="font-bold">
+              Note <span className="font-normal text-[12px]">(optional)</span>
+            </Label>
             <Textarea
               name={fields.note.name}
               key={fields.note.key}

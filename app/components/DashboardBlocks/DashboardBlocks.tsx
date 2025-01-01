@@ -1,9 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, CreditCard, DollarSign, Users } from "lucide-react";
-import prisma from "../utils/db";
-import { requiredUser } from "../utils/hooks";
-import { formatCurrency } from "../utils/format";
 import { FC } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Activity, CreditCard, Users } from "lucide-react";
+import prisma from "../../utils/db";
+import { requiredUser } from "../../utils/hooks";
+import { InvoiceStatus } from "@prisma/client";
+import TotalCard from "./TotalCard";
 
 async function getInvoiceList(userId: string) {
   const [data, openInvoices, paidInvoices] = await Promise.all([
@@ -12,13 +13,14 @@ async function getInvoiceList(userId: string) {
         userId: userId,
       },
       select: {
+        status: true,
         total: true,
       },
     }),
     prisma.invoice.findMany({
       where: {
         userId: userId,
-        status: "PENDING",
+        status: InvoiceStatus.PENDING,
       },
       select: {
         id: true,
@@ -28,7 +30,7 @@ async function getInvoiceList(userId: string) {
     prisma.invoice.findMany({
       where: {
         userId: userId,
-        status: "PAID",
+        status: InvoiceStatus.PAID,
       },
       select: {
         id: true,
@@ -51,21 +53,7 @@ const DashboardBlocks: FC = async () => {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 md:gap-8">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-          <DollarSign className="size-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <h2 className="text-2xl font-bold">
-            {formatCurrency(
-              data.reduce((acc, invoice) => acc + invoice.total, 0),
-              "USD"
-            )}
-          </h2>
-          <p className="text-xs text-muted-foreground">Based on total volume</p>
-        </CardContent>
-      </Card>
+      <TotalCard data={data} />
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
@@ -75,7 +63,9 @@ const DashboardBlocks: FC = async () => {
         </CardHeader>
         <CardContent>
           <h2 className="text-2xl font-bold">+{data.length}</h2>
-          <p className="text-xs text-muted-foreground">Total Invoices Isued!</p>
+          <p className="text-xs text-muted-foreground">
+            Total Invoices Issued!
+          </p>
         </CardContent>
       </Card>
       <Card>
