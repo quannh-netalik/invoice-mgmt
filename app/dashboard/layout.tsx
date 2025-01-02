@@ -1,8 +1,6 @@
 import { FC, ReactNode } from "react";
 import { requiredUser } from "../utils/hooks";
 import Link from "next/link";
-import Image from "next/image";
-import Logo from "@/public/logo.png";
 import DashboardLinks from "../components/DashboardLink";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -18,6 +16,7 @@ import {
 import { signOut } from "../utils/auth";
 import prisma from "../utils/db";
 import { redirect } from "next/navigation";
+import Logo from "../components/Logo";
 
 const validateUserOb = async (userId: string) => {
   const data = await prisma.user.findUnique({
@@ -46,12 +45,7 @@ const DashboardLayout: FC<{ children: ReactNode }> = async ({ children }) => {
         <div className="hidden border-r bg-muted/40 md:block">
           <div className="flex flex-col max-h-screen h-full gap-2">
             <div className="h-14 flex items-center border-b px-4 lg:h-[60px] lg:px-6">
-              <Link href="/" className="flex items-center gap-2">
-                <Image src={Logo} alt="Logo" className="size-7" />
-                <p className="text-2xl font-bold">
-                  Invoice<span className="text-blue-600">Management</span>
-                </p>
-              </Link>
+              <Logo />
             </div>
 
             <div className="flex-1">
@@ -62,6 +56,7 @@ const DashboardLayout: FC<{ children: ReactNode }> = async ({ children }) => {
           </div>
         </div>
 
+        {/* Mobile view */}
         <div className="flex flex-col">
           <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
             <Sheet>

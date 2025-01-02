@@ -345,12 +345,12 @@ const CreateInvoice: FC<ICreateInvoiceProps> = ({
             <div className="w-1/3">
               <div className="flex justify-between">
                 <span className="font-bold">Subtotal</span>
-                <span>$5.00</span>
+                <span>{formatCurrency(calculatedTotal, currency)}</span>
               </div>
               <div className="flex justify-between py-2 border-t">
                 <span className="font-bold">Total ({currency})</span>
                 <span className="font-medium underline underline-offset-2">
-                  $5.00
+                  {formatCurrency(calculatedTotal, currency)}
                 </span>
               </div>
             </div>
