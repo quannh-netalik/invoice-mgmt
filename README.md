@@ -17,16 +17,34 @@ The project provides interface for managing invoices, allowing user to visualize
 
 ## Getting Started
 
-First, run the development server:
+First, install the dependencies via:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+```
+
+Then create `.env` file in the root folder with variables in [.env.example](./.env.example). Make sure all values in the file is filled:
+
+```bash
+AUTH_SECRET= # Added by `npx auth`. Read more: https://cli.authjs.dev
+
+# Information from SMTP server (Mailtrap)
+EMAIL_SERVER_USER=
+EMAIL_SERVER_PASSWORD=
+EMAIL_SERVER_HOST=
+EMAIL_SERVER_PORT=
+EMAIL_FROM=
+
+# Information from SMTP server (Mailtrap)
+MAILTRAP_TOKEN=
+
+DATABASE_URL= #Database URI
+```
+
+Then run the development server:
+
+```bash
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
